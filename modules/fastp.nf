@@ -2,13 +2,16 @@ process fastp {
     container 'deborah/fastp'
 
     input:
-    path read_file
+    tuple path(reads1), path(reads2)
 
     output:
-    path "cleaned_${read_file.simpleName}.fastq.gz"
+    tuple path("cleaned_${reads1.simpleName}.fastq.gz"), path("cleaned_${reads2.simpleName}.fastq.gz")
 
     script:
     """
-    fastp -i $read_file -o cleaned_${read_file.simpleName}.fastq.gz
+    fastp \
+        -i $reads1 -I $reads2 \
+        -o cleaned_${reads1.simpleName}.fastq.gz \
+        -O cleaned_${reads2.simpleName}.fastq.gz
     """
 }
