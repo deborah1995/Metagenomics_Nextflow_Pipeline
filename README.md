@@ -5,11 +5,12 @@ Each module runs in an isolated Docker container for reproducibility and ease of
 
 ## 📦 Tools included
 
-- **fastp**: Quality control and filtering of raw reads
-- **Kaiju**: Taxonomic classification of metagenomic reads
-- **FunProfiler**: Functional profiling of metagenomic reads
-- **Maxbin2**: Binning algorithm
+- **Fastp**: Quality control and filtering of raw reads
+- **Kaiju**: Taxonomic classification of metagenomic reads (to implement)
+- **FunProfiler**: Functional profiling of metagenomic reads (to implement)
+- **Megahit**: Assembly step
 - **Quast**: Assembly Quality Check
+- **Bowtie2**: Read mapping
 
 ## 🐳 Containers
 
