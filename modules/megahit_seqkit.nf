@@ -27,5 +27,5 @@ megahit ${params.megahit_params} -t ${task.cpus} -1 ${r1} ${r2_arg} -o megahit_c
 
 echo "Filtering contigs with SeqKit for sample: ${sample_id}"
 seqkit seq ${params.seqkit_params} megahit_computation/final.contigs.fa -o ${sample_id}.contigs.filtered.fasta
-    """ // <--- QUESTA RIGA MANCAVA!
+    """
 }
