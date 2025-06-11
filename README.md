@@ -14,13 +14,14 @@ Each module runs in an isolated Docker container for reproducibility and ease of
 
 ## 🐳 Containers
 
-Each tool has its own folder with:
+Each tool has its folder with:
 - `Dockerfile`
 - `conda.yml`
 
 Example:
 
 fastp/
+
 ├── Dockerfile
 
 └── conda.yml
