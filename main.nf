@@ -1,21 +1,34 @@
 // main.nf
 
-// Abilita il DSL2 di Nextflow, essenziale per la modularità.
 nextflow.enable.dsl=2
 
-include { fastp } from './modules/fastp.nf'
+include { FASTP } from './modules/fastp.nf'
+include { MEGAHIT_SEQKIT } from './modules/megahit_seqkit.nf'
 
-// Definizione del workflow principale della pipeline.
 workflow {
-  // Crea un canale per i file di input.
-  // fromFilePairs cerca coppie di file basandosi su 'params.reads'.
-  // Produrrà tuple del tipo [sample_id, [file_R1, file_R2]].
-  reads_ch = Channel
-    .fromFilePairs(params.reads)
-    // Mappa le tuple per ottenere il formato [file_R1, file_R2] che il processo 'fastp' si aspetta.
-    .map { sample_id, files -> tuple(files[0], files[1]) }
+    input_ch = Channel
+        .fromPath(params.sample_file)
+        .splitCsv(header: true, sep: ',')
+        .map { row ->
+            def fastq_files = []
+            if (row.fastq_1) fastq_files << file(row.fastq_1)
+            if (row.fastq_2) fastq_files << file(row.fastq_2)
 
-  // Chiama il processo 'fastp' passandogli il canale 'reads_ch'.
-  // Nextflow si occuperà di eseguire 'fastp' per ogni coppia di file nel canale.
-  fastp(reads_ch)
+            tuple(
+                row.sample_id,
+                fastq_files
+            )
+        }
+        .set { reads_for_fastp_ch }
+
+    FASTP(reads_for_fastp_ch)
+
+    // Modifica qui: da FASTP.out.tuple a FASTP.out
+    FASTP.out // <--- RIGA 27 (o quella dove inizia il map da FASTP.out)
+        .map { sample_id, r1_trimmed, r2_trimmed, html_report ->
+            tuple(sample_id, [r1_trimmed, r2_trimmed])
+        }
+        .set { trimmed_reads_ch }
+    
+    MEGAHIT_SEQKIT(trimmed_reads_ch)
 }
